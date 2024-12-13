@@ -29,15 +29,16 @@ public class SecurityFilter {
 
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(true);  // 자격 증명 허용
 
-        config.addAllowedOriginPattern(CorsConfiguration.ALL);
-        config.addAllowedMethod(CorsConfiguration.ALL);
-        config.addAllowedHeader(CorsConfiguration.ALL);
+        config.addAllowedOriginPattern("*");
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", config);  // 모든 경로에 대해 CORS 설정 적용
         return source;
     }
+
 }
