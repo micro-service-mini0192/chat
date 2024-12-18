@@ -1,6 +1,6 @@
 package com.chatting.domain.room.presentation;
 
-import com.chatting.domain.room.presentation.application.RoomService;
+import com.chatting.domain.room.application.RoomService;
 import com.chatting.domain.room.presentation.dto.RoomRequest;
 import com.chatting.domain.room.presentation.dto.RoomResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,17 +18,17 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<RoomResponse.FindById> save(@RequestBody RoomRequest.Save dto) {
+    public ResponseEntity<RoomResponse.RoomFindById> save(@RequestBody RoomRequest.RoomSave dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomService.save(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<RoomResponse.FindAll>> findAll() {
+    public ResponseEntity<List<RoomResponse.RoomFindAll>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(roomService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RoomResponse.FindById> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<RoomResponse.RoomFindById> findById(@PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(roomService.findById(id));
     }
 

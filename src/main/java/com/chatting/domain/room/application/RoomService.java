@@ -1,7 +1,7 @@
-package com.chatting.domain.room.presentation.application;
+package com.chatting.domain.room.application;
 
-import com.chatting.domain.room.presentation.domain.Room;
-import com.chatting.domain.room.presentation.domain.RoomRepository;
+import com.chatting.domain.room.domain.Room;
+import com.chatting.domain.room.domain.RoomRepository;
 import com.chatting.domain.room.presentation.dto.RoomRequest;
 import com.chatting.domain.room.presentation.dto.RoomResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,21 +15,21 @@ import java.util.UUID;
 public class RoomService {
     private final RoomRepository roomRepository;
 
-    public RoomResponse.FindById save(RoomRequest.Save dto) {
+    public RoomResponse.RoomFindById save(RoomRequest.RoomSave dto) {
         String id = UUID.randomUUID().toString();
-        Room room = RoomRequest.Save.toEntity(id, dto);
+        Room room = RoomRequest.RoomSave.toEntity(id, dto);
         Room saveRoom = roomRepository.save(room);
-        return RoomResponse.FindById.toDto(saveRoom);
+        return RoomResponse.RoomFindById.toDto(saveRoom);
     }
 
-    public List<RoomResponse.FindAll> findAll() {
+    public List<RoomResponse.RoomFindAll> findAll() {
         List<Room> rooms = roomRepository.findAll();
-        return rooms.stream().map(RoomResponse.FindAll::toDto).toList();
+        return rooms.stream().map(RoomResponse.RoomFindAll::toDto).toList();
     }
 
-    public RoomResponse.FindById findById(Long id) {
+    public RoomResponse.RoomFindById findById(Long id) {
         Room room = roomRepository.findById(id).orElse(null);
-        return RoomResponse.FindById.toDto(room);
+        return RoomResponse.RoomFindById.toDto(room);
     }
 
     public void delete(Long id) {

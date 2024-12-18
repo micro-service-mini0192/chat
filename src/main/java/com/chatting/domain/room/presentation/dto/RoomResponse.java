@@ -1,17 +1,17 @@
 package com.chatting.domain.room.presentation.dto;
 
-import com.chatting.domain.room.presentation.domain.Room;
+import com.chatting.domain.room.domain.Room;
 import lombok.Builder;
 
 public class RoomResponse {
 
     @Builder
-    public record FindById (
+    public record RoomFindById(
             Long id,
             String roomName
     ) {
-        public static FindById toDto(Room entity) {
-            return FindById.builder()
+        public static RoomFindById toDto(Room entity) {
+            return RoomFindById.builder()
                     .id(entity.getId())
                     .roomName(entity.getRoomName())
                     .build();
@@ -19,12 +19,12 @@ public class RoomResponse {
     }
 
     @Builder
-    public record FindAll (
+    public record RoomFindAll(
             Long id,
             String roomName
     ) {
-        public static FindAll toDto(Room entity) {
-            return FindAll.builder()
+        public static RoomFindAll toDto(Room entity) {
+            return RoomFindAll.builder()
                     .id(entity.getId())
                     .roomName(entity.getRoomName())
                     .build();

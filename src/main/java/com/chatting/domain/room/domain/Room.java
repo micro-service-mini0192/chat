@@ -1,4 +1,4 @@
-package com.chatting.domain.room.presentation.domain;
+package com.chatting.domain.room.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

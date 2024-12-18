@@ -1,4 +1,4 @@
-logging:
-  level:
-    org.springframework.web.socket: DEBUG
-    org.springframework.messaging: DEBUG
+spring:
+  web:
+    resources:
+      add-mappings: false

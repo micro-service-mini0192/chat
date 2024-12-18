@@ -1,4 +1,4 @@
-package com.chatting.domain.room.presentation.domain;
+package com.chatting.domain.room.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
