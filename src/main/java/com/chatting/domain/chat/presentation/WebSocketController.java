@@ -1,5 +1,6 @@
-package com.chatting.domain.chat;
+package com.chatting.domain.chat.presentation;
 
+import com.chatting.domain.chat.presentation.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -12,7 +13,7 @@ public class WebSocketController {
     private final SimpMessagingTemplate template;
 
     @MessageMapping("/chat.sendMessage")
-    public void sendMessage(MessageDto.Message message) {
-        template.convertAndSend("/topic/"+message.id(), message);
+    public void sendMessage(MessageResponse.MessageRes messageRes) {
+        template.convertAndSend("/topic/"+ messageRes.id(), messageRes);
     }
 }

@@ -53,7 +53,7 @@ public class SecurityFilter {
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);  // 모든 경로에 대해 CORS 설정 적용
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 

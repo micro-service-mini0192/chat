@@ -1,4 +1,4 @@
-package com.chatting.domain.chat;
+package com.chatting.domain.chat.presentation;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

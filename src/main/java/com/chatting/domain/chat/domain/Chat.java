@@ -1,5 +1,6 @@
-package com.chatting.domain.member.domain;
+package com.chatting.domain.chat.domain;
 
+import com.chatting.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,20 +12,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Member member;
 
     @Column(nullable = false)
-    String username;
-
-    @Column(nullable = false)
-    String password;
-
-    @Column(nullable = false)
-    String nickname;
-
-    @Column(nullable = false)
-    private String role;
+    private String message;
 }
