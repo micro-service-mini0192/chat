@@ -20,6 +20,8 @@ import java.util.List;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // 404
     @ExceptionHandler(NoHandlerFoundException.class)
     public void handleNotFound(NoHandlerFoundException ex, HttpServletRequest request, HttpServletResponse response) {
         int httpStatus = HttpStatus.NOT_FOUND.value();
@@ -27,6 +29,7 @@ public class GlobalExceptionHandler {
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
+    // 405
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public void handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request, HttpServletResponse response) {
         int httpStatus = HttpStatus.METHOD_NOT_ALLOWED.value();
@@ -34,6 +37,7 @@ public class GlobalExceptionHandler {
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
+    // 값 누락
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public void handlerMissingServletRequestParameterException(MissingServletRequestParameterException ex, HttpServletRequest request, HttpServletResponse response) {
         int httpStatus = HttpStatus.METHOD_NOT_ALLOWED.value();
@@ -44,6 +48,15 @@ public class GlobalExceptionHandler {
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
+    // 중복 예외
+    @ExceptionHandler(DuplicateException.class)
+    public void handleDuplicateException(DuplicateException ex, HttpServletRequest request, HttpServletResponse response) {
+        int httpStatus = HttpStatus.BAD_REQUEST.value();
+        String message = ex.getMessage();
+        ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
+    }
+
+    // 유효성 검사 실패
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public void handlerMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request, HttpServletResponse response) {
         int httpStatus = HttpStatus.BAD_REQUEST.value();
@@ -53,6 +66,14 @@ public class GlobalExceptionHandler {
                 .toList();
 
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message.toString());
+    }
+
+    // 데이터가 없음
+    @ExceptionHandler(NotFoundDataException.class)
+    public void handleNotFoundDataException(NotFoundDataException ex, HttpServletRequest request, HttpServletResponse response) {
+        int httpStatus = HttpStatus.BAD_REQUEST.value();
+        String message = ex.getMessage();
+        ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -69,6 +90,7 @@ public class GlobalExceptionHandler {
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
+    // 모든 예외
     @ExceptionHandler(Exception.class)
     public void handleException(Exception ex, HttpServletRequest request, HttpServletResponse response){
         int httpStatus = HttpStatus.INTERNAL_SERVER_ERROR.value();

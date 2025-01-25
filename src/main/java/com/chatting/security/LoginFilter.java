@@ -20,6 +20,7 @@ import java.io.IOException;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -38,8 +39,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication authResult) {
         MemberDetails member = (MemberDetails) authResult.getPrincipal();
 
-        String jwtToken = JwtProvider.createJwtToken(member);
-        response.addHeader(JwtProvider.JWT_HEADER_STRING, JwtProvider.TOKEN_PREFIX_JWT + jwtToken);
+        String jwtToken = jwtProvider.createJwtToken(member);
+        response.addHeader(jwtProvider.JWT_HEADER_STRING, jwtProvider.TOKEN_PREFIX_JWT + jwtToken);
 
         response.setStatus(HttpStatus.CREATED.value());
     }

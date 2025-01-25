@@ -7,12 +7,13 @@ import lombok.Builder;
 public class MessageResponse {
     @Builder
     public record MessageRes(
-            String id,
+            Long roomId,
             String message,
             MemberResponse.MemberInfo member
     ) {
-        public static MessageRes toDto(String message, Member member) {
+        public static MessageRes toDto(Long roomId, String message, Member member) {
             return MessageRes.builder()
+                    .roomId(roomId)
                     .message(message)
                     .member(MemberResponse.MemberInfo.toDto(member))
                     .build();

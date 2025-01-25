@@ -1,5 +1,6 @@
 package com.chatting.domain.member.domain;
 
+import com.chatting.domain.member.presentation.dto.MemberRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,17 +15,18 @@ import lombok.NoArgsConstructor;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
-    String username;
+    private String password;
+
+    @Column(nullable = false, unique = true)
+    private String nickname;
 
     @Column(nullable = false)
-    String password;
-
-    @Column(nullable = false)
-    String nickname;
-
-    @Column(nullable = false)
-    private String role;
+    @Builder.Default
+    private String role = MemberRole.ROLE_USER.name();
 }

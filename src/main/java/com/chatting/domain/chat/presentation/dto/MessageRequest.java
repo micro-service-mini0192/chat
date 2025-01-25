@@ -5,7 +5,7 @@ import lombok.Builder;
 public class MessageRequest {
     @Builder
     public record MessageReq(
-            Long id,
+            Long roomId,
             String message
     ) {}
 }

@@ -20,6 +20,7 @@ import java.util.List;
 public class SecurityFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,8 +32,8 @@ public class SecurityFilter {
                 .cors(auth -> auth.configurationSource(corsConfigurationSource()))
                 .sessionManagement(auth -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .addFilterAt(new LoginFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtFilter(), LoginFilter.class)
+                .addFilterAt(new LoginFilter(authenticationManager, jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtFilter(jwtProvider), LoginFilter.class)
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/rooms/**").authenticated()
@@ -49,7 +50,7 @@ public class SecurityFilter {
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
 
-        config.setExposedHeaders(List.of(JwtProvider.REFRESH_HEADER_STRING, JwtProvider.JWT_HEADER_STRING));
+        config.setExposedHeaders(List.of(jwtProvider.REFRESH_HEADER_STRING, jwtProvider.JWT_HEADER_STRING));
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

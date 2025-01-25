@@ -13,7 +13,6 @@ public class MemberRequest {
         public static Member toEntity(MemberSave dto, String password) {
             if(password.equals(dto.password)) return null;
             return Member.builder()
-                    .role(MemberRole.USER.getRole())
                     .username(dto.username)
                     .nickname(dto.nickname)
                     .password(password)
