@@ -2,13 +2,24 @@ spring:
   web:
     resources:
       add-mappings: false
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.123.139:3306/chat
+    url: jdbc:mysql://${url}:3306/chat
     username: user
-    password: 1234
+    password: ${password}
+
   jpa:
     open-in-view: true
     hibernate:
       ddl-auto: update
     show-sql: false
+
+server:
+  port: 8001
+
+kafka:
+  url: ${url}
+
+security:
+  key: ${key}

@@ -1,9 +1,9 @@
 package com.chatting.security;
 
+import com.chatting.domain.members.application.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,8 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityFilter {
 
-    private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final MemberService memberService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,12 +32,10 @@ public class SecurityFilter {
                 .cors(auth -> auth.configurationSource(corsConfigurationSource()))
                 .sessionManagement(auth -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .addFilterAt(new LoginFilter(authenticationManager, jwtProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtFilter(jwtProvider), LoginFilter.class)
+                .addFilterAt(new JwtFilter(jwtProvider, memberService), UsernamePasswordAuthenticationFilter.class)
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/rooms/**").authenticated()
-                        .anyRequest().permitAll());
+                        .anyRequest().authenticated());
 
         return http.build();
     }

@@ -76,6 +76,14 @@ public class GlobalExceptionHandler {
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
+    // 인증되지 않음
+    @ExceptionHandler(AuthedException.class)
+    public void handleAuthedException(AuthedException ex, HttpServletRequest request, HttpServletResponse response) {
+        int httpStatus = HttpStatus.FORBIDDEN.value();
+        String message = ex.getMessage();
+        ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public void handlerDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request, HttpServletResponse response) {
         int httpStatus = HttpStatus.INTERNAL_SERVER_ERROR.value();

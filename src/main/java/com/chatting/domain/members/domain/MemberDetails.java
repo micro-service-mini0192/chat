@@ -1,4 +1,4 @@
-package com.chatting.domain.member.domain;
+package com.chatting.domain.members.domain;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,25 +12,27 @@ import java.util.Collections;
 public class MemberDetails implements UserDetails {
     private final Member member;
 
+    public Member getMember() { return this.member; }
+
     public Long getMemberId() {
-        return member.getId();
+        return this.member.getId();
     }
 
-    public String getNickname() { return member.getNickname(); }
+    public String getNickname() { return this.member.getNickname(); }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(member.getRole()));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return member.getUsername();
+        return this.member.getUsername();
     }
 
     @Override

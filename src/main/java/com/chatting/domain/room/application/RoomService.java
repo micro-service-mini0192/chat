@@ -16,8 +16,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
 
     public RoomResponse.RoomFindById save(RoomRequest.RoomSave dto) {
-        String id = UUID.randomUUID().toString();
-        Room room = RoomRequest.RoomSave.toEntity(id, dto);
+        Room room = RoomRequest.RoomSave.toEntity(dto);
         Room saveRoom = roomRepository.save(room);
         return RoomResponse.RoomFindById.toDto(saveRoom);
     }

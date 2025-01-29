@@ -8,7 +8,7 @@ public class RoomRequest {
     public record RoomSave(
             String roomName
     ) {
-        public static Room toEntity(String id, RoomSave dto) {
+        public static Room toEntity(RoomSave dto) {
             return Room.builder()
                     .roomName(dto.roomName)
                     .build();

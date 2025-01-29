@@ -1,13 +1,13 @@
 package com.chatting.domain.room.presentation;
 
-import com.chatting.domain.member.domain.MemberDetails;
+import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.room.application.RoomService;
 import com.chatting.domain.room.presentation.dto.RoomRequest;
 import com.chatting.domain.room.presentation.dto.RoomResponse;
+import com.chatting.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +20,13 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<RoomResponse.RoomFindById> save(@RequestBody RoomRequest.RoomSave dto,
-                                                          @AuthenticationPrincipal MemberDetails memberDetails) {
+    public ResponseEntity<RoomResponse.RoomFindById> save(@RequestBody RoomRequest.RoomSave dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomService.save(dto));
     }
 
     @GetMapping
     public ResponseEntity<List<RoomResponse.RoomFindAll>> findAll() {
+        Member member = SecurityUtil.getCurrentMember();
         return ResponseEntity.status(HttpStatus.OK).body(roomService.findAll());
     }
 
