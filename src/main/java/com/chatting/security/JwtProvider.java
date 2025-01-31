@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.members.domain.MemberDetails;
+import com.chatting.exception.AuthedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,9 +17,6 @@ public class JwtProvider {
 
     @Value("${security.key}")
     public String SECRET;
-
-    public final int JWT_EXPIRATION_TIME = 60 * 60 * 1000;
-    public final int REFRESH_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
 
     public final String REFRESH_HEADER_STRING = "Refresh";
     public final String TOKEN_PREFIX_JWT = "Bearer ";
@@ -47,9 +45,9 @@ public class JwtProvider {
     }
 
     public MemberDetails getMemberDetails(String token) {
-        if(token.isEmpty()) throw new SecurityException("Not Found Token");
+        token = token.replace(TOKEN_PREFIX_JWT, "");
+        if(token.isEmpty()) throw new AuthedException("Token is missing");
         try {
-            token = token.replace(TOKEN_PREFIX_JWT, "");
             Member jwtMember = decodeToken(token, SECRET);
             return new MemberDetails(jwtMember);
         } catch(Exception e) {

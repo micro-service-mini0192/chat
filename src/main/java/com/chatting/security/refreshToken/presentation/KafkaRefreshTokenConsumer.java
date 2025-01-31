@@ -21,7 +21,6 @@ public class KafkaRefreshTokenConsumer {
     private final ObjectMapper objectMapper;
     private final RefreshTokenService refreshTokenService;
 
-    @Transactional
     @KafkaListener(topics = "refreshToken", groupId = "group1")
     public void getRefreshToken(@Header(KafkaHeaders.ACKNOWLEDGMENT) Acknowledgment ack,
                                 @Header(KafkaHeaders.OFFSET) long offset,

@@ -14,19 +14,20 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/rooms")
+@RequestMapping("/api/v1/rooms")
 public class RoomController {
 
     private final RoomService roomService;
 
     @PostMapping
     public ResponseEntity<RoomResponse.RoomFindById> save(@RequestBody RoomRequest.RoomSave dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(roomService.save(dto));
+        Long memberId = SecurityUtil.getCurrentMember();
+        roomService.save(dto, memberId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
     public ResponseEntity<List<RoomResponse.RoomFindAll>> findAll() {
-        Member member = SecurityUtil.getCurrentMember();
         return ResponseEntity.status(HttpStatus.OK).body(roomService.findAll());
     }
 
@@ -37,7 +38,8 @@ public class RoomController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        roomService.delete(id);
+        Long memberId = SecurityUtil.getCurrentMember();
+        roomService.delete(id, memberId);
         return ResponseEntity.noContent().build();
     }
 
