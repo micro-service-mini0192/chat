@@ -1,24 +1,25 @@
 package com.chatting.domain.members.domain;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
-@RequiredArgsConstructor
 public class MemberRepository {
 
-    private final EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
-    @Transactional
-    public Member findById(Long id) {
-        return em.find(Member.class, id);
+    public Optional<Member> findById(Long id) {
+        return Optional.ofNullable(em.find(Member.class, id));
     }
 
-    @Transactional
     public void save(Member member) {
-        Member existMember = findById(member.getId());
+        Member existMember = findById(member.getId()).orElse(null);
         if(existMember == null) {
             em.persist(member);
             return;

@@ -1,5 +1,6 @@
 package com.chatting.domain.chat.domain;
 
+import com.chatting.config.BaseTime;
 import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.room.domain.Room;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Chat {
+public class Chat extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,11 +1,13 @@
 package com.chatting.domain.room.presentation;
 
-import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.room.application.RoomService;
 import com.chatting.domain.room.presentation.dto.RoomRequest;
 import com.chatting.domain.room.presentation.dto.RoomResponse;
 import com.chatting.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,11 @@ public class RoomController {
     @GetMapping("/{id}")
     public ResponseEntity<RoomResponse.RoomFindById> findById(@PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(roomService.findById(id));
+    }
+
+    @GetMapping("/chats/{id}")
+    public ResponseEntity<Page<RoomResponse.ChatPage>> findByChatId(@PathVariable("id") Long id, Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(roomService.findChat(id, pageable));
     }
 
     @DeleteMapping("/{id}")

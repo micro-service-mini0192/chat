@@ -4,7 +4,6 @@ import com.chatting.domain.room.domain.Room;
 import lombok.Builder;
 
 public class RoomRequest {
-    @Builder
     public record RoomSave(
             String roomName
     ) {

@@ -1,10 +1,13 @@
 package com.chatting.domain.room.presentation.dto;
 
+import com.chatting.domain.chat.domain.Chat;
+import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.room.domain.Room;
 import com.chatting.domain.room.domain.RoomMember;
 import com.chatting.domain.room.domain.RoomRole;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +49,26 @@ public class RoomResponse {
             return RoomFindAll.builder()
                     .id(entity.getId())
                     .roomName(entity.getRoomName())
+                    .build();
+        }
+    }
+
+    @Builder
+    public record ChatPage(
+            MemberInfo member,
+            String message,
+            LocalDateTime createdAt
+    ) {
+        public record MemberInfo(
+                Long memberId,
+                String nickname
+        ) {}
+        public static ChatPage toDto(Chat entity) {
+            MemberInfo memberInfo = new MemberInfo(entity.getMember().getId(), entity.getMember().getNickname());
+            return ChatPage.builder()
+                    .member(memberInfo)
+                    .message(entity.getMessage())
+                    .createdAt(entity.getCreatedAt())
                     .build();
         }
     }

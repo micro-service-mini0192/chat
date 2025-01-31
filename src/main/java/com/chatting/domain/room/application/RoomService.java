@@ -1,5 +1,6 @@
 package com.chatting.domain.room.application;
 
+import com.chatting.domain.chat.domain.Chat;
 import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.members.domain.MemberRepository;
 import com.chatting.domain.room.domain.*;
@@ -8,12 +9,13 @@ import com.chatting.domain.room.presentation.dto.RoomResponse;
 import com.chatting.exception.AuthedException;
 import com.chatting.exception.NotFoundDataException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class RoomService {
     @Transactional
     public void save(RoomRequest.RoomSave dto, Long memberId) {
 
-        Member member = memberRepository.findById(memberId);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundDataException("Not Found Room."));;
         Room room = Room.builder()
                 .roomName(dto.roomName())
                 .build();
@@ -46,14 +48,29 @@ public class RoomService {
     }
 
     public RoomResponse.RoomFindById findById(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Data."));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Room."));
         return RoomResponse.RoomFindById.toDto(room);
+    }
+
+    public Page<RoomResponse.ChatPage> findChat(Long id, Pageable pageable) {
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Room."));
+        List<Chat> chats = room.getChats();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), chats.size());
+        List<Chat> pageChats = chats.subList(start, end);
+
+        List<RoomResponse.ChatPage> chatPageList = pageChats.stream()
+                .map(RoomResponse.ChatPage::toDto)
+                .toList();
+
+        return new PageImpl<>(chatPageList, pageable, chats.size());
     }
 
     @Transactional
     public void delete(Long id, Long memberId) {
-        Member member = memberRepository.findById(memberId);
-        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Data."));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundDataException("Not Found Member."));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Room."));
 
         List<RoomMember> roomMembers = room.getRoomMembers();
         for (RoomMember roomMember : roomMembers) {
@@ -63,6 +80,6 @@ public class RoomService {
             return;
         }
 
-        throw new AuthedException("Not found room");
+        throw new AuthedException("Not Found room");
     }
 }

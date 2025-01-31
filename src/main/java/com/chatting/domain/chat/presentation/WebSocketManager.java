@@ -3,6 +3,7 @@ package com.chatting.domain.chat.presentation;
 import com.chatting.domain.chat.application.ChatService;
 import com.chatting.domain.chat.presentation.dto.MessageRequest;
 import com.chatting.domain.chat.presentation.dto.MessageResponse;
+import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.members.domain.MemberDetails;
 import com.chatting.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,10 @@ public class WebSocketManager {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String headerToken = accessor.getFirstNativeHeader("Authorization");
         MemberDetails memberDetails = jwtProvider.getMemberDetails(headerToken);
-        Long memberId = memberDetails.getMemberId();
+        Member member = memberDetails.getMember();
 
-        MessageResponse.MessageRes messageRes = MessageResponse.MessageRes.toDto(dto.roomId(), "test");
+        MessageResponse.MessageRes messageRes = MessageResponse.MessageRes.toDto(dto.roomId(), "test", member);
         template.convertAndSend("/topic/"+ dto.roomId(), messageRes);
+        chatService.save(dto, member);
     }
 }

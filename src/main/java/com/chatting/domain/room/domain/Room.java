@@ -1,5 +1,6 @@
 package com.chatting.domain.room.domain;
 
+import com.chatting.domain.chat.domain.Chat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,7 @@ public class Room {
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomMember> roomMembers;
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Chat> chats;
 }

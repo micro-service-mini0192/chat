@@ -11,7 +11,6 @@ public class RefreshTokenRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
     public void save(RefreshToken refreshToken) {
         if(em.find(RefreshToken.class, refreshToken.getId()) != null) {
             em.merge(refreshToken);
@@ -20,7 +19,6 @@ public class RefreshTokenRepository {
         em.persist(refreshToken);
     }
 
-    @Transactional
     public void delete(Long id) {
         RefreshToken refreshToken = em.find(RefreshToken.class, id);
         if(refreshToken != null) {

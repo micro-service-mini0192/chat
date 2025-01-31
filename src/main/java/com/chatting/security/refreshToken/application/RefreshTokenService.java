@@ -8,6 +8,7 @@ import com.chatting.security.refreshToken.presentation.RefreshTokenRequest;
 import com.chatting.security.refreshToken.presentation.RefreshTokenState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,8 @@ public class RefreshTokenService {
         }
     }
 
-    private void refreshTokenLoginState(RefreshTokenRequest refreshTokenRequest) {
+    @Transactional
+    public void refreshTokenLoginState(RefreshTokenRequest refreshTokenRequest) {
         Member member = Member.builder()
                 .id(refreshTokenRequest.getId())
                 .username(refreshTokenRequest.getUsername())
@@ -45,7 +47,8 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    private void refreshTokenLogoutState(Long id) {
+    @Transactional
+    public void refreshTokenLogoutState(Long id) {
         refreshTokenRepository.delete(id);
     }
 }
