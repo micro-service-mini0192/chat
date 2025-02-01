@@ -1,11 +1,9 @@
 package com.chatting.domain.room.domain;
 
-import com.chatting.domain.members.domain.Member;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,12 +22,9 @@ public class RoomRepository {
     }
 
     public Optional<Room> findById(Long id) {
-        return Optional.ofNullable(em.find(Room.class, id));
-    }
-
-    public List<Room> findAll() {
-        return em.createQuery("SELECT r FROM Room r", Room.class)
-                .getResultList();
+        return Optional.ofNullable(em.createQuery("SELECT r FROM Room r WHERE r.id = :id", Room.class)
+                .setParameter("id", id)
+                .getSingleResult());
     }
 
     public void delete(Room room) {

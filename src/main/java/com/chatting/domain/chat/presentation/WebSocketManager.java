@@ -6,14 +6,18 @@ import com.chatting.domain.chat.presentation.dto.MessageResponse;
 import com.chatting.domain.members.domain.Member;
 import com.chatting.domain.members.domain.MemberDetails;
 import com.chatting.security.JwtProvider;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-@Component
+@Controller
 @RequiredArgsConstructor
 public class WebSocketManager {
 
@@ -22,13 +26,14 @@ public class WebSocketManager {
     private final JwtProvider jwtProvider;
 
     @MessageMapping("/chat.sendMessage")
-    public void sendMessage(Message<?> message, MessageRequest.MessageReq dto) {
+    public void sendMessage(Message<?> message, @Payload MessageRequest.MessageReq dto) throws MethodArgumentNotValidException {
+        if(!dto.vaild()) return;
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String headerToken = accessor.getFirstNativeHeader("Authorization");
         MemberDetails memberDetails = jwtProvider.getMemberDetails(headerToken);
         Member member = memberDetails.getMember();
 
-        MessageResponse.MessageRes messageRes = MessageResponse.MessageRes.toDto(dto.roomId(), "test", member);
+        MessageResponse.MessageRes messageRes = MessageResponse.MessageRes.toDto(dto.roomId(), dto.message(), member);
         template.convertAndSend("/topic/"+ dto.roomId(), messageRes);
         chatService.save(dto, member);
     }

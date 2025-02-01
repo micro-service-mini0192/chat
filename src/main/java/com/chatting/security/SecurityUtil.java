@@ -11,6 +11,6 @@ public class SecurityUtil {
         if (authentication != null && authentication.getPrincipal() instanceof MemberDetails memberDetails) {
             return memberDetails.getMemberId();
         }
-        throw new AuthedException("인증되지 않은 사용자 입니다.");
+        throw new AuthedException("Unauthenticated user.");
     }
 }

@@ -23,6 +23,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
+
         if (accessor.getCommand() == StompCommand.CONNECT) {
             String token = accessor.getFirstNativeHeader("Authorization");
             MemberDetails memberDetails = jwtProvider.getMemberDetails(token);

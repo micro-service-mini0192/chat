@@ -6,9 +6,9 @@ import com.chatting.domain.room.presentation.dto.RoomResponse;
 import com.chatting.security.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +26,7 @@ public class RoomController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create room", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<RoomResponse.RoomFindById> save(@RequestBody RoomRequest.RoomSave dto) {
+    public ResponseEntity<RoomResponse.RoomFindById> save(@Valid @RequestBody RoomRequest.RoomSave dto) {
         Long memberId = SecurityUtil.getCurrentMember();
         roomService.save(dto, memberId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -35,19 +35,22 @@ public class RoomController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find rooms", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<RoomResponse.RoomFindAll>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(roomService.findAll());
+        Long memberId = SecurityUtil.getCurrentMember();
+        return ResponseEntity.status(HttpStatus.OK).body(roomService.findAll(memberId));
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find a room", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<RoomResponse.RoomFindById> findById(@PathVariable("id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(roomService.findById(id));
+        Long memberId = SecurityUtil.getCurrentMember();
+        return ResponseEntity.status(HttpStatus.OK).body(roomService.findById(id, memberId));
     }
 
     @GetMapping(value = "/chats/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find chats", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Page<RoomResponse.ChatPage>> findByChatId(@PathVariable("id") Long id, Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(roomService.findChat(id, pageable));
+    public ResponseEntity<Page<RoomResponse.ChatPage>> findByChatId(@PathVariable("id") Long id, @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+        Long memberId = SecurityUtil.getCurrentMember();
+        return ResponseEntity.status(HttpStatus.OK).body(roomService.findChat(id, page, memberId));
     }
 
     @DeleteMapping("/{id}")

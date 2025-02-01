@@ -48,14 +48,6 @@ public class GlobalExceptionHandler {
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
-    // 중복 예외
-    @ExceptionHandler(DuplicateException.class)
-    public void handleDuplicateException(DuplicateException ex, HttpServletRequest request, HttpServletResponse response) {
-        int httpStatus = HttpStatus.BAD_REQUEST.value();
-        String message = ex.getMessage();
-        ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
-    }
-
     // 유효성 검사 실패
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public void handlerMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request, HttpServletResponse response) {
@@ -66,6 +58,14 @@ public class GlobalExceptionHandler {
                 .toList();
 
         ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message.toString());
+    }
+
+    // 중복 예외
+    @ExceptionHandler(DuplicateException.class)
+    public void handleDuplicateException(DuplicateException ex, HttpServletRequest request, HttpServletResponse response) {
+        int httpStatus = HttpStatus.BAD_REQUEST.value();
+        String message = ex.getMessage();
+        ExceptionResponseSender.createExceptionResponse(httpStatus, request, response, message);
     }
 
     // 데이터가 없음

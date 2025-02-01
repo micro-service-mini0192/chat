@@ -57,7 +57,7 @@ public class RoomResponse {
     public record ChatPage(
             MemberInfo member,
             String message,
-            LocalDateTime createdAt
+            LocalDateTime createAt
     ) {
         @Builder
         public record MemberInfo(
@@ -73,7 +73,7 @@ public class RoomResponse {
             return ChatPage.builder()
                     .member(memberInfo)
                     .message(entity.getMessage())
-                    .createdAt(entity.getCreatedAt())
+                    .createAt(entity.getCreateAt())
                     .build();
         }
     }

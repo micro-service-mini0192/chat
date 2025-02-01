@@ -11,6 +11,7 @@ import com.chatting.exception.NotFoundDataException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,20 +43,24 @@ public class RoomService {
         roomMemberRepository.save(roomMembers);
     }
 
-    public List<RoomResponse.RoomFindAll> findAll() {
-        List<Room> rooms = roomRepository.findAll();
+    public List<RoomResponse.RoomFindAll> findAll(Long memberId) {
+        List<RoomMember> roomMembers = roomMemberRepository.findMemberBelongRooms(memberId);
+        List<Room> rooms = roomMembers.stream().map(RoomMember::getRoom).toList();
         return rooms.stream().map(RoomResponse.RoomFindAll::toDto).toList();
     }
 
-    public RoomResponse.RoomFindById findById(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found room."));
-        return RoomResponse.RoomFindById.toDto(room);
+    public RoomResponse.RoomFindById findById(Long id, Long memberId) {
+        RoomMember roomMember = roomMemberRepository.findRoomMemberOfRoomAndMember(id, memberId)
+                .orElseThrow(() -> new NotFoundDataException("Not found room."));
+        return RoomResponse.RoomFindById.toDto(roomMember.getRoom());
     }
 
-    public Page<RoomResponse.ChatPage> findChat(Long id, Pageable pageable) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found room."));
-        List<Chat> chats = room.getChats();
+    public Page<RoomResponse.ChatPage> findChat(Long id, int page, Long memberId) {
+        RoomMember roomMember = roomMemberRepository.findRoomMemberOfRoomAndMember(id, memberId)
+                .orElseThrow(() -> new NotFoundDataException("Not found room."));
+        List<Chat> chats = roomMember.getRoom().getChats();
 
+        Pageable pageable = PageRequest.of(page-1, 50);
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), chats.size());
         List<Chat> pageChats = chats.subList(start, end);

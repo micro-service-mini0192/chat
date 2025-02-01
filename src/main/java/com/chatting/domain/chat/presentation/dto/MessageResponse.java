@@ -11,7 +11,7 @@ public class MessageResponse {
             Long roomId,
             String message,
             MemberInfo member,
-            LocalDateTime createdAt
+            String createAt
     ) {
         public record MemberInfo(
                 Long memberId,
@@ -23,7 +23,7 @@ public class MessageResponse {
                     .roomId(roomId)
                     .message(message)
                     .member(memberInfo)
-                    .createdAt(LocalDateTime.now())
+                    .createAt(LocalDateTime.now().toString())
                     .build();
         }
     }
