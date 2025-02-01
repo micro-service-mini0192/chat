@@ -17,6 +17,7 @@ public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public void refreshTokenSaveManager(RefreshTokenRequest refreshTokenRequest) {
         if(refreshTokenRequest.getState() == RefreshTokenState.LOGIN) {
             refreshTokenLoginState(refreshTokenRequest);
@@ -29,7 +30,6 @@ public class RefreshTokenService {
         }
     }
 
-    @Transactional
     public void refreshTokenLoginState(RefreshTokenRequest refreshTokenRequest) {
         Member member = Member.builder()
                 .id(refreshTokenRequest.getId())
@@ -47,7 +47,6 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    @Transactional
     public void refreshTokenLogoutState(Long id) {
         refreshTokenRepository.delete(id);
     }

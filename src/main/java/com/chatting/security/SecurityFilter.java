@@ -35,7 +35,8 @@ public class SecurityFilter {
                 .addFilterAt(new JwtFilter(jwtProvider, memberService), UsernamePasswordAuthenticationFilter.class)
 
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated());
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .anyRequest().permitAll());
 
         return http.build();
     }

@@ -59,12 +59,17 @@ public class RoomResponse {
             String message,
             LocalDateTime createdAt
     ) {
+        @Builder
         public record MemberInfo(
                 Long memberId,
                 String nickname
         ) {}
         public static ChatPage toDto(Chat entity) {
-            MemberInfo memberInfo = new MemberInfo(entity.getMember().getId(), entity.getMember().getNickname());
+            MemberInfo memberInfo = MemberInfo.builder()
+                    .memberId(entity.getMember().getId())
+                    .nickname(entity.getMember().getNickname())
+                    .build();
+
             return ChatPage.builder()
                     .member(memberInfo)
                     .message(entity.getMessage())

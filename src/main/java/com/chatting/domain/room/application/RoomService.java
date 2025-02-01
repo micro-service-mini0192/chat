@@ -28,7 +28,7 @@ public class RoomService {
     @Transactional
     public void save(RoomRequest.RoomSave dto, Long memberId) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundDataException("Not Found Room."));;
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundDataException("Not found member."));;
         Room room = Room.builder()
                 .roomName(dto.roomName())
                 .build();
@@ -48,12 +48,12 @@ public class RoomService {
     }
 
     public RoomResponse.RoomFindById findById(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Room."));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found room."));
         return RoomResponse.RoomFindById.toDto(room);
     }
 
     public Page<RoomResponse.ChatPage> findChat(Long id, Pageable pageable) {
-        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Room."));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found room."));
         List<Chat> chats = room.getChats();
 
         int start = (int) pageable.getOffset();
@@ -69,17 +69,32 @@ public class RoomService {
 
     @Transactional
     public void delete(Long id, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundDataException("Not Found Member."));
-        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not Found Room."));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundDataException("Not found member."));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found room."));
 
         List<RoomMember> roomMembers = room.getRoomMembers();
         for (RoomMember roomMember : roomMembers) {
-            if(!roomMember.getRoom().getId().equals(member.getId())) continue;
+            if(!roomMember.getMember().getId().equals(member.getId())) continue;
             if(!roomMember.getRole().equals(RoomRole.ADMIN)) throw new AuthedException("Member is not ADMIN");
             roomRepository.delete(room);
             return;
         }
 
-        throw new AuthedException("Not Found room");
+        throw new AuthedException("Member do not belongs to this room");
+    }
+
+    @Transactional
+    public void join(Long id, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundDataException("Not found member."));
+        Room room = roomRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found room."));
+        if(roomMemberRepository.isMemberBelongRoom(id, memberId)) throw new AuthedException("Member is already belong to this room");
+
+        RoomMember roomMember = RoomMember.builder()
+                .room(room)
+                .member(member)
+                .role(RoomRole.MEMBER)
+                .build();
+
+        roomMemberRepository.save(roomMember);
     }
 }
