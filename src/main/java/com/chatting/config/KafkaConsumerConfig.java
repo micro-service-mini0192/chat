@@ -1,5 +1,6 @@
 package com.chatting.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -18,16 +19,16 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class KafkaConsumerConfig {
 
-    @Value("${kafka.url}")
-    public String kafkaUrl;
+    private final KafkaConfig kafkaConfig;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
 
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaUrl + ":9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.getKafkaUrl() + ":9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "group1");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");

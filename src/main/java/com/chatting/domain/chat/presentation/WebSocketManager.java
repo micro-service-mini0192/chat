@@ -1,5 +1,6 @@
 package com.chatting.domain.chat.presentation;
 
+import com.chatting.config.KafkaConfig;
 import com.chatting.domain.chat.application.ChatService;
 import com.chatting.domain.chat.presentation.dto.MessageRequest;
 import com.chatting.domain.chat.presentation.dto.MessageResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 public class WebSocketManager {
 
     private final SimpMessagingTemplate template;
+    private final KafkaChatProducer kafkaChatProducer;
     private final ChatService chatService;
     private final JwtProvider jwtProvider;
 
@@ -34,6 +36,7 @@ public class WebSocketManager {
         Member member = memberDetails.getMember();
 
         MessageResponse.MessageRes messageRes = MessageResponse.MessageRes.toDto(dto.roomId(), dto.message(), member);
+        kafkaChatProducer.sendMessage(messageRes);
         template.convertAndSend("/topic/"+ dto.roomId(), messageRes);
         chatService.save(dto, member);
     }

@@ -27,4 +27,10 @@ public class MessageResponse {
                     .build();
         }
     }
+
+    @Builder
+    public record KafkaMessageRes(
+            MessageRes data,
+            String sender
+    ) {}
 }
