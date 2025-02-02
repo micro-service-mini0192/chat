@@ -38,12 +38,21 @@ public class JwtProvider {
                 .build();
     }
 
+    /**
+     * 인가 진행
+     * @param memberDetails
+     */
     public void validToken(MemberDetails memberDetails) {
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    /**
+     * JWT 복호화
+     * @param token JWT 정보
+     * @return MemberDetails
+     */
     public MemberDetails getMemberDetails(String token) {
         token = token.replace(TOKEN_PREFIX_JWT, "");
         if(token.isEmpty()) throw new AuthedException("Token is missing");

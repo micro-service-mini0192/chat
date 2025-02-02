@@ -12,5 +12,5 @@ public class KafkaConfig {
     @Value("${kafka.url}")
     private String kafkaUrl;
 
-    private final String serverPort = UUID.randomUUID().toString();
+    private final String senderUUID = UUID.randomUUID().toString();
 }

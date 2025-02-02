@@ -22,12 +22,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
+
+        // 구독
         config.enableSimpleBroker("/topic");
+
+        // 전송
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // WebSocket 연결
         registry
                 .addEndpoint("/websocket")
                 .setAllowedOriginPatterns("*")

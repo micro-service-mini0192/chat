@@ -25,23 +25,23 @@ public class KafkaChatProducer {
         try {
             MessageResponse.KafkaMessageRes kafkaMessageRes = MessageResponse.KafkaMessageRes.builder()
                     .data(messageInfo)
-                    .sender(kafkaConfig.getServerPort())
+                    .sender(kafkaConfig.getSenderUUID())
                     .build();
 
             String message = mapper.writeValueAsString(kafkaMessageRes);
             CompletableFuture<SendResult<String, String>> feature = kafkaTemplate.send("chat", message);
 
             feature.thenAccept(result -> {
-                log.info("Send chat result, Topic: {}, Offset: {}, Partition: {}",
+                log.info("[Kafka Producer] Topic: {}, Offset: {}, Partition: {}",
                         result.getProducerRecord().topic(),
                         result.getRecordMetadata().offset(),
                         result.getRecordMetadata().partition());
             }).exceptionally(ex -> {
-                log.error("Send chat fail", ex);
+                log.error("[Kafka Producer] Send chat fail", ex);
                 return null;
             });
         } catch (JsonProcessingException e) {
-            log.error("Couldn't encode chat info", e);
+            log.error("[Kafka Producer] Couldn't encode chat info", e);
         }
     }
 }

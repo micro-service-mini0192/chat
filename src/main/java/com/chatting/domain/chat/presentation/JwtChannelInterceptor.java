@@ -23,11 +23,13 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-
+        // 연결이 WebSocket 연결이라면
         if (accessor.getCommand() == StompCommand.CONNECT) {
+            // 헤더 정보를 받아옴
             String token = accessor.getFirstNativeHeader("Authorization");
-            MemberDetails memberDetails = jwtProvider.getMemberDetails(token);
-            jwtProvider.validToken(memberDetails);
+
+            // getMemberDetails는 memberDetails 정보를 받는 로직인데 토큰이 유효한지만 확인하면 된다.
+            jwtProvider.getMemberDetails(token);
         }
 
         return message;
