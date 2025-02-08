@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/rooms")
@@ -35,6 +36,7 @@ public class RoomController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find rooms", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<RoomResponse.RoomFindAll>> findAll() {
+        log.info("findAll");
         Long memberId = SecurityUtil.getCurrentMember();
         return ResponseEntity.status(HttpStatus.OK).body(roomService.findAll(memberId));
     }
@@ -49,6 +51,7 @@ public class RoomController {
     @GetMapping(value = "/chats/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find chats", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Page<RoomResponse.ChatPage>> findByChatId(@PathVariable("id") Long id, @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+        log.info("findChat");
         Long memberId = SecurityUtil.getCurrentMember();
         return ResponseEntity.status(HttpStatus.OK).body(roomService.findChat(id, page, memberId));
     }

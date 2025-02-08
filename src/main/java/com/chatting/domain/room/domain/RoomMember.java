@@ -12,6 +12,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(
+        indexes = {
+                @Index(name = "idx_room_member_room_id", columnList = "room_id"),
+                @Index(name = "idx_room_member_member_id", columnList = "member_id"),
+                @Index(name = "idx_room_member_room_id_member_id", columnList = "room_id, member_id")  // 복합 인덱스
+        }
+)
 public class RoomMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

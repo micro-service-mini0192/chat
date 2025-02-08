@@ -27,5 +27,6 @@ public class Chat extends BaseTime {
     @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Member member;
 
+    @Column(nullable = false)
     private String message;
 }
